@@ -9,15 +9,13 @@ class GraphGenerator:
 
     def __init__(self, **params):
         self.n = params.get('n', self.n)
-        self.m = params.get('m', self.m)
-        self.min_edge_cost = params.get('min_edge_cost', self.min_edge_cost)
-        self.max_edge_cost = params.get('max_edge_cost', self.max_edge_cost)
+        self.edge_weight_range = params.get('edge_weight_range', (10, 100))
 
     def weighted_graph(self):
-        g = nx.gnm_random_graph(self.n, self.m)
+        g = nx.complete_graph(self.n)
         r = Random()
 
         for origin, target in g.edges():
-            g[origin][target]['weight'] = r.randint(self.min_edge_cost, self.max_edge_cost)
+            g[origin][target]['weight'] = r.randint(*self.edge_weight_range)
 
         return g
