@@ -43,7 +43,7 @@ class EdgeScore(Algorithm):
             available_neighbors = available_nodes & self.edge_scores[current].keys()
 
             if available_neighbors:
-                # Select edge with greatest betweenness (which appeared most in shortest-paths).
+                # Select edge with greatest betweenness (which most appears in shortest-paths).
                 next_in_path = max(available_neighbors, key=lambda p: self.edge_scores[current][p])
             else:
                 # If none of the edges with :current as initial end-point were
