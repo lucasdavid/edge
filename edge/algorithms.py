@@ -76,15 +76,15 @@ class EdgeScore(Algorithm):
 
 class TwiceAround(Algorithm):
     def solve(self):
-        self.hcc = nx.Graph()
-
-        mst = nx.minimum_spanning_tree(self.g)
-        path = np.array(list(nx.dfs_preorder_nodes(mst, self.start)))
-        path = np.unique(path)
-        path = list(np.append(path, [self.start]))
+        path = np.append(
+            np.unique(
+                list(nx.dfs_preorder_nodes(
+                    nx.minimum_spanning_tree(self.g), self.start))), [self.start])
 
         path = iter(path)
         current = next(path)
+
+        self.hcc = nx.Graph()
 
         for next_in_path in path:
             self.hcc.add_edge(current, next_in_path, self.g[current][next_in_path])
@@ -97,20 +97,18 @@ class NearestNeighbor(Algorithm):
     def solve(self):
         current = self.start
 
-        nodes_available = set(self.g.nodes())
-        nodes_available.remove(current)
+        open_nodes = set(self.g.nodes())
+        open_nodes.remove(current)
 
         self.hcc = nx.Graph()
 
         while self.hcc.number_of_nodes() < self.g.number_of_nodes():
-            neighbors_available = self.g[current].keys() & nodes_available
-
-            nearest = min(neighbors_available, key=lambda n: self.g[current][n]['weight'])
+            nearest = min(self.g[current].keys() & open_nodes, key=lambda n: self.g[current][n]['weight'])
 
             self.hcc.add_edge(current, nearest, self.g[current][nearest])
             current = nearest
 
-            nodes_available.remove(current)
+            open_nodes.remove(current)
 
         self.hcc.add_edge(current, self.start, self.g[current][self.start])
 
