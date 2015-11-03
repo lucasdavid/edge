@@ -5,4 +5,3 @@ def cost(g):
     :return: the float cost of transversing the path.
     """
     return sum((d['weight'] for _, _, d in g.edges(data=True)))
-`
