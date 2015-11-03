@@ -14,8 +14,9 @@ class ComparerManager:
         algorithms.TwiceAround,
     }
 
-    def __init__(self, iterations=10, maximum_number_of_nodes=100, number_of_workers=None):
+    def __init__(self, iterations=10, maximum_number_of_nodes=100, number_of_workers=None, euclidean=True):
         self.maximum_number_of_nodes = maximum_number_of_nodes
+        self.use_euclidean_graphs = True
         self.iterations = iterations
         self.workers = None
         self.number_of_workers = number_of_workers or multiprocessing.cpu_count()
@@ -80,7 +81,12 @@ class ComparerManager:
                 self.graph_generator.n = max(
                     4,
                     int(self.graphs_generated / self.iterations * self.maximum_number_of_nodes))
-                self.graphs.append((self.graphs_generated, self.graph_generator.weighted_graph()))
+
+                g = self.graph_generator.euclidean_graph() \
+                    if self.use_euclidean_graphs \
+                    else self.graph_generator.graph()
+
+                self.graphs.append((self.graphs_generated, g))
                 self.graphs_generated += 1
 
             self.cv.notify_all()
